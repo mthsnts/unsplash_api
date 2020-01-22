@@ -3,8 +3,10 @@ import urllib.request
 import credentials as cr
 from time import sleep as zzz
 from twitter import *
+from os import unlink
 
 t = Twitter(auth=OAuth(cr.TT_ACCESS_TOKEN, cr.TT_ACCESS_TOKEN_SECRET,cr.TT_API_KEY, cr.TT_API_SECRET_KEY))
+
 
 def tweetimage():
     photo = nsplshr.getImages(cr.UNSPLASH_CLIENT_ID).body[0]
@@ -21,6 +23,7 @@ def tweetimage():
 
     id_img1 = t_upload.media.upload(media=imagedata)["media_id_string"]
     t.statuses.update(status=tweet, media_ids=",".join([id_img1]))
+    unlink(img_dir)
     zzz(3600)
     tweetimage()
 
