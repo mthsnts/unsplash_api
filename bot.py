@@ -14,14 +14,16 @@ def tweetimage():
     link = photo['links']['html']
     download_link = photo['links']['download']
     img_dir = f"./imgs/{photo['id']}.jpg"
-    tweet = f"User: {user}\nImage: {link}\nDownload: {download_link}"
+    tweet = f"{user}\n{link}\n{download_link}"
     urllib.request.urlretrieve(download_link, img_dir)
 
     with open(img_dir, "rb") as imagefile:
         imagedata = imagefile.read()
     t_upload = Twitter(domain='upload.twitter.com', auth=OAuth(cr.TT_ACCESS_TOKEN, cr.TT_ACCESS_TOKEN_SECRET,cr.TT_API_KEY, cr.TT_API_SECRET_KEY))
-
-    id_img1 = t_upload.media.upload(media=imagedata)["media_id_string"]
+    try:
+        id_img1 = t_upload.media.upload(media=imagedata)["media_id_string"]
+    except Exception:
+        tweetimage()
     t.statuses.update(status=tweet, media_ids=",".join([id_img1]))
     unlink(img_dir)
     zzz(3600)
